@@ -1,10 +1,12 @@
 function Bear() {
-  this.dBear = setSpeed();
+  this.dBear = document.getElementById("speedBear").value;
+  console.log(this.dBear);
   this.htmlElement = document.getElementById("bear");
   this.id = this.htmlElement.id;
   this.x = this.htmlElement.offsetLeft;
   this.y = this.htmlElement.offsetTop;
   this.move = function (xDir, yDir) {
+    console.log("moving");
     this.fitBounds();
     this.x += this.dBear * xDir;
     this.y += this.dBear * yDir;
@@ -32,16 +34,16 @@ function Bear() {
 }
 
 function start() {
-  console.log("hello");
   //create bear
   bear = new Bear();
   document.addEventListener("keydown", moveBear, false);
   document.getElementById("speedBear").onchange = function () {
-    Bear.dBear = setSpeed();
+    setSpeed();
   };
   bees = new Array();
   makeBees();
   updateBees();
+  document.addEventListener("keydown", (lastStingTime = new Date()));
 }
 
 // Handle keyboad events
@@ -69,7 +71,8 @@ function moveBear(e) {
 function setSpeed() {
   console.log("changing");
   let bearSpeed = document.getElementById("speedBear").value;
-  return bearSpeed;
+  bear.dBear = bearSpeed;
+  //return bearSpeed;
 }
 
 class Bee {
@@ -171,6 +174,7 @@ function moveBees() {
     let dx = getRandomInt(2 * speed) - speed;
     let dy = getRandomInt(2 * speed) - speed;
     bees[i].move(dx, dy);
+    isHit(bees[i], bear); //we add this to count stings
   }
 }
 
@@ -179,8 +183,62 @@ function updateBees() {
   //move the bees randomly
   moveBees();
   //use a fixed update period
-  let period = document.getElementById("periodTimer").value; //modify this to control refresh period
-  //update the timer for the next move
+  if (hits.innerHTML >= 1000) {
+    window.alert("Game Over!");
+    clearTimeout();
+  } else {
+    let period = document.getElementById("periodTimer").value; //modify this to control refresh period
+    //update the timer for the next move
+    updateTimer = setTimeout("updateBees()", period);
+  }
+}
 
-  updateTimer = setTimeout("updateBees()", period);
+function isHit(defender, offender) {
+  if (overlap(defender, offender)) {
+    //check if the two image overlap
+    let score = hits.innerHTML;
+    score = Number(score) + 1; //increment the score
+    hits.innerHTML = score; //display the new score
+
+    let newStingTime = new Date();
+    let thisDuration = newStingTime - lastStingTime;
+    lastStingTime = newStingTime;
+    let longestDuration = Number(duration.innerHTML);
+    if (longestDuration === 0) {
+      longestDuration = thisDuration;
+    } else {
+      if (longestDuration < thisDuration) longestDuration = thisDuration;
+    }
+    console.log(longestDuration);
+    duration.innerHTML = longestDuration;
+  }
+}
+
+function overlap(element1, element2) {
+  //consider the two rectangles wrapping the two elements
+  //rectangle of the first element
+  left1 = element1.htmlElement.offsetLeft;
+  top1 = element1.htmlElement.offsetTop;
+  right1 = element1.htmlElement.offsetLeft + element1.htmlElement.offsetWidth;
+  bottom1 = element1.htmlElement.offsetTop + element1.htmlElement.offsetHeight;
+  //rectangle of the second element
+  left2 = element2.htmlElement.offsetLeft; //e2x
+  top2 = element2.htmlElement.offsetTop; //e2y
+  right2 = element2.htmlElement.offsetLeft + element2.htmlElement.offsetWidth;
+  bottom2 = element2.htmlElement.offsetTop + element2.htmlElement.offsetHeight;
+  //calculate the intersection of the two rectangles
+  x_intersect = Math.max(0, Math.min(right1, right2) - Math.max(left1, left2));
+  y_intersect = Math.max(0, Math.min(bottom1, bottom2) - Math.max(top1, top2));
+  intersectArea = x_intersect * y_intersect;
+  //if intersection is nil no hit
+  if (intersectArea == 0 || isNaN(intersectArea)) {
+    return false;
+  }
+  return true;
+}
+
+function addBee() {
+  var bee = new Bee();
+  bee.display();
+  bees.push(bee);
 }
