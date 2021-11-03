@@ -1,18 +1,16 @@
 function Bear() {
   this.dBear = document.getElementById("speedBear").value;
-  console.log(this.dBear);
   this.htmlElement = document.getElementById("bear");
   this.id = this.htmlElement.id;
   this.x = this.htmlElement.offsetLeft;
   this.y = this.htmlElement.offsetTop;
   this.move = function (xDir, yDir) {
-    console.log("moving");
-    this.fitBounds();
     this.x += this.dBear * xDir;
     this.y += this.dBear * yDir;
     this.display();
   };
   this.display = function () {
+    this.fitBounds();
     this.htmlElement.style.left = this.x + "px";
     this.htmlElement.style.top = this.y + "px";
     this.htmlElement.style.display = "absolute";
@@ -33,6 +31,10 @@ function Bear() {
   };
 }
 
+function iniDate() {
+  lastStingTime = new Date();
+}
+
 function start() {
   //create bear
   bear = new Bear();
@@ -43,7 +45,7 @@ function start() {
   bees = new Array();
   makeBees();
   updateBees();
-  document.addEventListener("keydown", (lastStingTime = new Date()));
+  document.addEventListener("keydown", iniDate());
 }
 
 // Handle keyboad events
@@ -69,7 +71,6 @@ function moveBear(e) {
 }
 
 function setSpeed() {
-  console.log("changing");
   let bearSpeed = document.getElementById("speedBear").value;
   bear.dBear = bearSpeed;
   //return bearSpeed;
@@ -209,7 +210,6 @@ function isHit(defender, offender) {
     } else {
       if (longestDuration < thisDuration) longestDuration = thisDuration;
     }
-    console.log(longestDuration);
     duration.innerHTML = longestDuration;
   }
 }
