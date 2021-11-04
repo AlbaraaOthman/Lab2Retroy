@@ -1,5 +1,5 @@
 function Bear() {
-  this.dBear = document.getElementById("speedBear").value;
+  this.dBear = document.getElementById("speedBear").value; //reads speed from textbox
   this.htmlElement = document.getElementById("bear");
   this.id = this.htmlElement.id;
   this.x = this.htmlElement.offsetLeft;
@@ -45,7 +45,7 @@ function start() {
   bees = new Array();
   makeBees();
   updateBees();
-  document.addEventListener("keydown", iniDate());
+  document.addEventListener("keydown", iniDate()); //only intialises date after keydown
 }
 
 // Handle keyboad events
@@ -71,8 +71,8 @@ function moveBear(e) {
 }
 
 function setSpeed() {
-  let bearSpeed = document.getElementById("speedBear").value;
-  bear.dBear = bearSpeed;
+  let bearSpeed = document.getElementById("speedBear").value; //gets new speed value
+  bear.dBear = bearSpeed; //updates dBear
   //return bearSpeed;
 }
 
@@ -143,6 +143,7 @@ function createBeeImg(wNum) {
 }
 
 function getRandomInt(max) {
+  //Finds random location for the bees
   var random = Math.floor(Math.random() * max) + 1;
   return random;
 }
@@ -185,8 +186,9 @@ function updateBees() {
   moveBees();
   //use a fixed update period
   if (hits.innerHTML >= 1000) {
-    window.alert("Game Over!");
-    clearTimeout();
+    //Stops the game when 1000 stings are reached
+    window.alert("Game Over!"); //alerts that game is over
+    clearTimeout(); //clears time
   } else {
     let period = document.getElementById("periodTimer").value; //modify this to control refresh period
     //update the timer for the next move
@@ -238,7 +240,7 @@ function overlap(element1, element2) {
 }
 
 function addBee() {
-  var bee = new Bee();
-  bee.display();
-  bees.push(bee);
+  var bee = new Bee(); //creates new bee
+  bee.display(); //displays the bee
+  bees.push(bee); //adds the bee to the bees array
 }
